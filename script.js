@@ -12,39 +12,52 @@ const createSelectInput = (catArr) => {
 };
 
 const getCategories = async () => {
-  const catListResponse = await fetch(
-    `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=pl-PL`
-  );
-  const catListData = await catListResponse.json();
-  const catList = catListData.genres;
-  createSelectInput(catList);
+  try {
+    const catListResponse = await fetch(
+      `https://api.themoviedb.org/3/genre/movie/list?api_key=${API_KEY}&language=pl-PL`
+    );
+    const catListData = await catListResponse.json();
+    const catList = catListData.genres;
+    createSelectInput(catList);
+  } catch (error) {
+    alert("Problem with get category list");
+  }
 };
 getCategories();
 
-const getDataList = async (id) => {
-  const response = await fetch(
-    `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=${id}&language=pl-PL&page=3`
-  );
-  console.log(response);
+const getFilms = async (id) => {
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/4/discover/movie?api_key=${API_KEY}&with_genres=${id}&language=pl-PL&page=1`
+    );
+    const films = await response.json();
+    console.log(films.total_pages);
 
-  const filmList = await response.json();
-  console.log(filmList);
-
-  return filmList;
+    return films;
+  } catch (error) {
+    alert("Problem with get films");
+  }
 };
 
-const gePosters = async (id) => {
-  let urlBase = `https://image.tmdb.org/t/p/w500/`;
-
-  const { results } = await getDataList(id);
-  results.forEach((movie) => {
-    const poster = document.createElement("img");
-    poster.src = `${urlBase}${movie.poster_path}`;
-    container.insertAdjacentElement("beforeend", poster);
-  });
+const displayPosters = async (filmID) => {
+  try {
+    let urlBase = `https://image.tmdb.org/t/p/w500/`;
+    const { results } = await getFilms(filmID);
+    results.forEach((movie) => {
+      const poster = document.createElement("img");
+      poster.src = `${urlBase}${movie.poster_path}`;
+      container.insertAdjacentElement("beforeend", poster);
+    });
+  } catch (error) {
+    alert("Problem with geting posters");
+  }
 };
+
+window.addEventListener("DOMContentLoaded", () => {
+  displayPosters(28);
+});
+
 categorySelect.addEventListener("change", (e) => {
-  console.log(e.target.value);
   container.textContent = "";
-  gePosters(e.target.value);
+  displayPosters(e.target.value);
 });
