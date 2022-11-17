@@ -1,11 +1,12 @@
 const API_KEY = "b1faa3b7206840f87e88b9254b08fa74";
-const container = document.querySelector(".films-container");
+const filmsWrapper = document.querySelector(".films-container");
 const categorySelect = document.querySelector(".category-input");
 
 // Pages Navigation
 const pageNavBtns = document.querySelectorAll(".page-nav__btn");
 const curPage = document.querySelector(".pages-nav__current-page");
 
+// create input " select Categories "
 const createSelectInput = (catArr) => {
   catArr.forEach((cat) => {
     const catOption = document.createElement("option");
@@ -22,6 +23,7 @@ const navigationData = {
   filmCategory: 28,
 };
 
+// get list of categories
 const getCategories = async () => {
   try {
     const catListResponse = await fetch(
@@ -53,17 +55,27 @@ const getFilms = async (id, pageNum = 1) => {
   }
 };
 
-export const displayPosters = async (filmID, pageNum) => {
+export const displayFilms = async (filmID, pageNum) => {
   try {
     let urlBase = `https://image.tmdb.org/t/p/w500/`;
     const { results } = await getFilms(filmID, pageNum);
     results.forEach((movie) => {
+      //create single film container
+      const filmContainer = document.createElement("div");
+      filmContainer.classList.add("film-container");
+
+      //create poster
       const poster = document.createElement("img");
       poster.src = `${urlBase}${movie.poster_path}`;
-      container.insertAdjacentElement("beforeend", poster);
+      filmContainer.insertAdjacentElement("afterbegin", poster);
+
+      //create info wraper
       const infoWraper = document.createElement("div");
       infoWraper.classList.add("film-info");
-      poster.insertAdjacentElement("beforeend", infoWraper);
+      infoWraper.textContent = movie.title;
+      filmContainer.insertAdjacentElement("beforeend", infoWraper);
+
+      filmsWrapper.insertAdjacentElement("afterbegin", filmContainer);
     });
   } catch (error) {
     console.error(error);
@@ -71,16 +83,16 @@ export const displayPosters = async (filmID, pageNum) => {
 };
 
 window.addEventListener("DOMContentLoaded", () => {
-  displayPosters(28);
+  displayFilms(28);
 });
 
 categorySelect.addEventListener("change", (e) => {
-  container.textContent = "";
+  filmsWrapper.textContent = "";
   navigationData.filmCategory = e.target.value;
   navigationData.currentPage = 1;
   curPage.textContent = navigationData.currentPage;
 
-  displayPosters(e.target.value);
+  displayFilms(e.target.value);
   return e.target.value;
 });
 
@@ -95,7 +107,7 @@ pageNavBtns.forEach((btn) =>
       : navigationData.currentPage;
 
     curPage.textContent = navigationData.currentPage;
-    container.textContent = "";
-    displayPosters(navigationData.filmCategory, navigationData.currentPage);
+    filmsWrapper.textContent = "";
+    displayFilms(navigationData.filmCategory, navigationData.currentPage);
   })
 );
