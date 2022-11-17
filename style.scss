@@ -28,11 +28,12 @@ main {
   img {
     width: 200px;
     height: 300px;
+    display: flex;
     transition: 0.3s all ease-in-out;
+    z-index: 0;
 
     &:hover {
-      width: 220px;
-      height: 320px;
+      transform: translateY(-2%);
       box-shadow: 0px 0px 50px -5px rgb(34, 34, 34);
     }
   }
