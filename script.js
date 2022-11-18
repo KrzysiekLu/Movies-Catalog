@@ -55,7 +55,15 @@ const getFilms = async (id, pageNum = 1) => {
   }
 };
 
-export const displayFilms = async (filmID, pageNum) => {
+const createMovieInfo = (movie) => {
+  const description = document.createElement("p");
+  description.classList.add("movie-description");
+  description.textContent = movie.overview;
+
+  return description;
+};
+
+const displayFilms = async (filmID, pageNum) => {
   try {
     let urlBase = `https://image.tmdb.org/t/p/w500/`;
     const { results } = await getFilms(filmID, pageNum);
@@ -74,6 +82,7 @@ export const displayFilms = async (filmID, pageNum) => {
       infoWraper.classList.add("film-info");
       infoWraper.textContent = movie.title;
       filmContainer.insertAdjacentElement("beforeend", infoWraper);
+      infoWraper.insertAdjacentElement("beforeend", createMovieInfo(movie));
 
       filmsWrapper.insertAdjacentElement("afterbegin", filmContainer);
     });

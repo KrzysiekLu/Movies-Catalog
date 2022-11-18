@@ -45,7 +45,7 @@ main {
 }
 .film-container:hover > .film-info {
   opacity: 1;
-  height: 60%;
+  height: 100%;
 }
 
 .film-info {
@@ -59,4 +59,10 @@ main {
   opacity: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.801);
+}
+
+.movie-description {
+  margin-top: 15px;
+  font-size: 12px;
+  overflow: hidden;
 }/*# sourceMappingURL=style.css.map */
